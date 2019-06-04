@@ -3,8 +3,8 @@ package com.yangyxd.alipayme;
 import android.app.Activity;
 import android.text.TextUtils;
 
-import com.alipay.sdk.app.EnvUtils;
-import com.alipay.sdk.app.PayTask;
+// import com.alipay.sdk.app.EnvUtils;
+// import com.alipay.sdk.app.PayTask;
 import com.alipay.sdk.app.AuthTask;
 
 import org.w3c.dom.Text;
@@ -62,9 +62,9 @@ public class AlipayMePlugin implements MethodCallHandler {
   public void onMethodCall(MethodCall call, Result result) {
     String method = call.method;
     if ("pay".equals(method)) {
-      String payInfo = call.argument("payInfo");
-      boolean isSandbox = call.argument("isSandbox");
-      pay(_reg.activity(), payInfo, isSandbox, result);
+      // String payInfo = call.argument("payInfo");
+      // boolean isSandbox = call.argument("isSandbox");
+      // pay(_reg.activity(), payInfo, isSandbox, result);
     } else if ("init".equals(method)) {
       APPID = call.argument("APPID");
       PID = call.argument("PID");
@@ -77,8 +77,8 @@ public class AlipayMePlugin implements MethodCallHandler {
       boolean isSandbox = call.argument("isSandbox");
       Oauth(_reg.activity(), authInfo, isSandbox, result);
     } else if ("version".equals(method)) {
-      PayTask payTask = new PayTask(_reg.activity());
-      result.success(payTask.getVersion());
+      // PayTask payTask = new PayTask(_reg.activity());
+      // result.success(payTask.getVersion());
     } else if ("sign".equals(method)) {
       boolean rsa2 = call.argument("rsa2") == "1";
       String data = call.argument("data");
@@ -91,50 +91,50 @@ public class AlipayMePlugin implements MethodCallHandler {
   }
 
   // 支付
-  public static void pay(final Activity currentActivity, String payInfo, boolean isSandbox, final Result callback){
-    if (TextUtils.isEmpty(APPID) || (TextUtils.isEmpty(RSA2_PRIVATE) && TextUtils.isEmpty(RSA_PRIVATE))) {
-      if (TextUtils.isEmpty(payInfo)) {
-        callback.error("支付发生错误：无效的参数", null, null);
-        return;
-      }
-    }
+  // public static void pay(final Activity currentActivity, String payInfo, boolean isSandbox, final Result callback){
+  //   if (TextUtils.isEmpty(APPID) || (TextUtils.isEmpty(RSA2_PRIVATE) && TextUtils.isEmpty(RSA_PRIVATE))) {
+  //     if (TextUtils.isEmpty(payInfo)) {
+  //       callback.error("支付发生错误：无效的参数", null, null);
+  //       return;
+  //     }
+  //   }
 
-    /*
-     * 如果payInfo为空，则在本地生成一个测试订单，正式运行时，由服务器生成
-     */
-    if (TextUtils.isEmpty(payInfo)) {
-      boolean rsa2 = (RSA2_PRIVATE.length() > 0);
-      Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(APPID, rsa2);
-      String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
+  //   /*
+  //    * 如果payInfo为空，则在本地生成一个测试订单，正式运行时，由服务器生成
+  //    */
+  //   if (TextUtils.isEmpty(payInfo)) {
+  //     boolean rsa2 = (RSA2_PRIVATE.length() > 0);
+  //     Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(APPID, rsa2);
+  //     String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
 
-      String privateKey = rsa2 ? RSA2_PRIVATE : RSA_PRIVATE;
-      String sign = OrderInfoUtil2_0.getSign(params, privateKey, rsa2);
-      payInfo = orderParam + "&" + sign;
-    }
+  //     String privateKey = rsa2 ? RSA2_PRIVATE : RSA_PRIVATE;
+  //     String sign = OrderInfoUtil2_0.getSign(params, privateKey, rsa2);
+  //     payInfo = orderParam + "&" + sign;
+  //   }
 
-    final String orderInfo = payInfo;
+  //   final String orderInfo = payInfo;
 
-    //沙箱环境
-    if(isSandbox){
-      EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
-    }
+  //   //沙箱环境
+  //   // if(isSandbox){
+  //   //   EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
+  //   // }
 
-    Runnable payRunnable = new Runnable() {
-      @Override
-      public void run() {
-        try {
-          PayTask alipay = new PayTask(currentActivity);
-          Map<String, String> result = alipay.payV2(orderInfo, true);
-          callback.success(result);
-        } catch (Exception e) {
-          callback.error(e.getMessage(),"支付发生错误", e);
-        }
-      }
-    };
+  //   Runnable payRunnable = new Runnable() {
+  //     @Override
+  //     public void run() {
+  //       try {
+  //         PayTask alipay = new PayTask(currentActivity);
+  //         Map<String, String> result = alipay.payV2(orderInfo, true);
+  //         callback.success(result);
+  //       } catch (Exception e) {
+  //         callback.error(e.getMessage(),"支付发生错误", e);
+  //       }
+  //     }
+  //   };
 
-    Thread payThread = new Thread(payRunnable);
-    payThread.start();
-  }
+  //   Thread payThread = new Thread(payRunnable);
+  //   payThread.start();
+  // }
 
   // 登录
   public static void Oauth(final Activity currentActivity, String authInfo, boolean isSandbox, final Result callback) {
@@ -162,9 +162,9 @@ public class AlipayMePlugin implements MethodCallHandler {
 
     final String _authInfo = authInfo;
 
-    if(isSandbox){
-      EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
-    }
+    // if(isSandbox){
+    //   EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
+    // }
 
     Runnable authRunnable = new Runnable() {
       @Override
